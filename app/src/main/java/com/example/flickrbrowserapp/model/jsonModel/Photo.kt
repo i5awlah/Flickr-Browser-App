@@ -1,4 +1,4 @@
-package com.example.flickrbrowserapp
+package com.example.flickrbrowserapp.model.jsonModel
 
 data class Photo(
     val farm: Int,
@@ -9,7 +9,5 @@ data class Photo(
     val owner: String,
     val secret: String,
     val server: String,
-    val title: String,
-    val thumbnailsSmall: String,
-    val thumbnailsBig: String
+    val title: String
 )

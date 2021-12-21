@@ -1,19 +1,18 @@
 package com.example.flickrbrowserapp
 
-import android.content.DialogInterface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.flickrbrowserapp.databinding.ActivityMainBinding
 import com.example.flickrbrowserapp.databinding.ImageAlertBinding
+import com.example.flickrbrowserapp.model.PhotoModel
+import com.example.flickrbrowserapp.services.APIClient
+import com.example.flickrbrowserapp.services.APIInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -34,7 +33,8 @@ class MainActivity : AppCompatActivity() {
     private val apiKey = "2c129a93d0769924c943bbcb558d68b3"
     private var tag = "dog"
 
-    private var photosList = arrayListOf<Photo>()
+    private var photosList = arrayListOf<PhotoModel>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,23 +49,23 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
-                Log.d("Main", "onStartTrackingTouch")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 numberOfImage = seek.progress.toString().toInt()
-                requestAPI()
+//                requestAPI()
+                requestAPIByRetrofit()
             }
         })
 
         setupRV()
-        requestAPI()
-
+//        requestAPI()
+        requestAPIByRetrofit()
         binding.btnSearch.setOnClickListener {
             tag = binding.etSearch.text.toString()
             if (tag.isNotEmpty()) {
-                requestAPI()
+//                requestAPI()
+                requestAPIByRetrofit()
             }
         }
 
@@ -110,12 +110,7 @@ class MainActivity : AppCompatActivity() {
             val photos = jsonObject.getJSONObject("photos").getJSONArray("photo")
 
             for (i in 0 until photos.length()) {
-                val farm = photos.getJSONObject(i).getInt("farm")
                 val id = photos.getJSONObject(i).getString("id")
-                val isfamily = photos.getJSONObject(i).getInt("isfamily")
-                val isfriend = photos.getJSONObject(i).getInt("isfriend")
-                val ispublic = photos.getJSONObject(i).getInt("ispublic")
-                val owner = photos.getJSONObject(i).getString("owner")
                 val secret = photos.getJSONObject(i).getString("secret")
                 val server = photos.getJSONObject(i).getString("server")
                 val title = photos.getJSONObject(i).getString("title")
@@ -125,15 +120,10 @@ class MainActivity : AppCompatActivity() {
                 val thumbnailsBig = "https://live.staticflickr.com/${server}/${id}_${secret}_b.jpg"  // b -> large 1024 px
 
 
-                val newPhoto = Photo(farm, id, isfamily, isfriend, ispublic, owner, secret, server, title, thumbnailsSmall, thumbnailsBig)
+                val newPhoto = PhotoModel(title, thumbnailsSmall, thumbnailsBig)
                 photosList.add(newPhoto)
             }
             adapter.update(photosList)
-
-            for (i in 0 until photos.length()) {
-                Log.d("Main", "${photosList[i].thumbnailsSmall}")
-                Log.d("Main", "${photosList[i].thumbnailsBig}")
-            }
         }
     }
 
@@ -149,6 +139,35 @@ class MainActivity : AppCompatActivity() {
 
         dialogBuilder.setView(dialogView)
         dialogBuilder.show()
+
+    }
+
+    private fun requestAPIByRetrofit() {
+        photosList.clear()
+        CoroutineScope(IO).launch {
+            val response = APIClient.getClient()?.create(APIInterface::class.java)!!.getPhotos(tag, numberOfImage)
+
+            if (response.isSuccessful()) {
+                var photos = response?.body()!!.photos.photo
+
+                for (i in 0 until photos.size) {
+                    val id = photos[i].id
+                    val server = photos[i].server
+                    val secret = photos[i].secret
+
+                    val thumbnailsSmall = "https://live.staticflickr.com/$server/${id}_${secret}_q.jpg" // q -> thumbnail 150 px
+                    val thumbnailsBig = "https://live.staticflickr.com/$server/${id}_${secret}_b.jpg"  // b -> large 1024 px
+                    photosList.add(PhotoModel(photos[i].title, thumbnailsSmall, thumbnailsBig))
+                }
+
+                withContext(Main){
+                    adapter.update(photosList)
+                }
+
+            } else {
+                Log.d("Main", "Unable to get data")
+            }
+        }
 
     }
 }

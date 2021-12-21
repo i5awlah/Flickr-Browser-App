@@ -5,8 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.flickrbrowserapp.databinding.PhotoRowBinding
+import com.example.flickrbrowserapp.model.PhotoModel
 
-class PhotoAdapter(private var photos: ArrayList<Photo>, private val activity: MainActivity): RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+class PhotoAdapter(private var photos: ArrayList<PhotoModel>, private val activity: MainActivity): RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
     class PhotoViewHolder(val binding: PhotoRowBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
@@ -31,7 +32,7 @@ class PhotoAdapter(private var photos: ArrayList<Photo>, private val activity: M
     override fun getItemCount() = photos.size
 
 
-    fun update (photos: ArrayList<Photo>) {
+    fun update (photos: ArrayList<PhotoModel>) {
         this.photos = photos
         notifyDataSetChanged()
     }
