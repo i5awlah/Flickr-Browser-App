@@ -1,4 +1,4 @@
-package com.example.flickrbrowserapp
+package com.example.flickrbrowserapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

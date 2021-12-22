@@ -1,4 +1,4 @@
-package com.example.flickrbrowserapp
+package com.example.flickrbrowserapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,8 +6,9 @@ import android.util.Log
 import android.widget.SeekBar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.flickrbrowserapp.adapters.PhotoAdapter
 import com.example.flickrbrowserapp.databinding.ActivityMainBinding
-import com.example.flickrbrowserapp.model.PhotoModel
+import com.example.flickrbrowserapp.models.PhotoModel
 import com.example.flickrbrowserapp.services.APIClient
 import com.example.flickrbrowserapp.services.APIInterface
 import kotlinx.coroutines.CoroutineScope

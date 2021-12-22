@@ -1,4 +1,4 @@
-package com.example.flickrbrowserapp.model
+package com.example.flickrbrowserapp.models
 
 data class PhotoModel(
     val title: String,

@@ -1,4 +1,4 @@
-package com.example.flickrbrowserapp.model.jsonModel
+package com.example.flickrbrowserapp.models.jsonModel
 
 data class Photos(
     val page: Int,

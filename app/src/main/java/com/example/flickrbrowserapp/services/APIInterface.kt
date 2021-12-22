@@ -1,6 +1,6 @@
 package com.example.flickrbrowserapp.services
 
-import com.example.flickrbrowserapp.model.jsonModel.PhotoResponse
+import com.example.flickrbrowserapp.models.jsonModel.PhotoResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

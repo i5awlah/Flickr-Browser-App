@@ -1,19 +1,21 @@
-package com.example.flickrbrowserapp
+package com.example.flickrbrowserapp.adapters
 
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.flickrbrowserapp.databinding.PhotoRowBinding
-import com.example.flickrbrowserapp.model.PhotoModel
+import com.example.flickrbrowserapp.activities.DetailsActivity
+import com.example.flickrbrowserapp.activities.MainActivity
+import com.example.flickrbrowserapp.databinding.RowPhotoBinding
+import com.example.flickrbrowserapp.models.PhotoModel
 
 class PhotoAdapter(private var photos: ArrayList<PhotoModel>, private val activity: MainActivity): RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
-    class PhotoViewHolder(val binding: PhotoRowBinding): RecyclerView.ViewHolder(binding.root)
+    class PhotoViewHolder(val binding: RowPhotoBinding): RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         return PhotoViewHolder(
-            PhotoRowBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RowPhotoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
