@@ -4,12 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.flickrbrowserapp.databinding.ActivityMainBinding
-import com.example.flickrbrowserapp.databinding.ImageAlertBinding
 import com.example.flickrbrowserapp.model.PhotoModel
 import com.example.flickrbrowserapp.services.APIClient
 import com.example.flickrbrowserapp.services.APIInterface
@@ -31,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private var numberOfImage = 10
     private val apiKey = "2c129a93d0769924c943bbcb558d68b3"
-    private var tag = "dog"
+    private var tag = "computer"
 
     private var photosList = arrayListOf<PhotoModel>()
 
@@ -41,6 +38,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        setupSeekBar()
+        setupRV()
+        requestAPI()
+        //requestAPIByRetrofit()
+
+        binding.btnSearch.setOnClickListener {
+            tag = binding.etSearch.text.toString()
+            if (tag.isNotEmpty()) {
+                requestAPI()
+                //requestAPIByRetrofit()
+            }
+        }
+
+
+    }
+
+    private fun setupSeekBar() {
         val seek = binding.seekBar
         seek?.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
@@ -53,23 +68,10 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 numberOfImage = seek.progress.toString().toInt()
-//                requestAPI()
-                requestAPIByRetrofit()
+                requestAPI()
+                //requestAPIByRetrofit()
             }
         })
-
-        setupRV()
-//        requestAPI()
-        requestAPIByRetrofit()
-        binding.btnSearch.setOnClickListener {
-            tag = binding.etSearch.text.toString()
-            if (tag.isNotEmpty()) {
-//                requestAPI()
-                requestAPIByRetrofit()
-            }
-        }
-
-
     }
 
     private fun setupRV() {
@@ -125,21 +127,6 @@ class MainActivity : AppCompatActivity() {
             }
             adapter.update(photosList)
         }
-    }
-
-    fun showImageAlert (imageUrl: String, title: String) {
-        val dialogView = layoutInflater.inflate(R.layout.image_alert, null)
-        val binding = ImageAlertBinding.bind(dialogView)
-
-        Glide.with(this).load(imageUrl).into(binding.ivBig)
-        binding.tvTitle.text = title
-
-        val dialogBuilder = AlertDialog.Builder(this)
-
-
-        dialogBuilder.setView(dialogView)
-        dialogBuilder.show()
-
     }
 
     private fun requestAPIByRetrofit() {

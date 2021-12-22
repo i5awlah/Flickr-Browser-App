@@ -1,5 +1,6 @@
 package com.example.flickrbrowserapp
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +25,11 @@ class PhotoAdapter(private var photos: ArrayList<PhotoModel>, private val activi
                 .into(imageView)
 
             cvPhoto.setOnClickListener {
-                activity.showImageAlert(photo.thumbnailsBig, photo.title)
+                activity.startActivity(
+                    Intent(activity, DetailsActivity::class.java)
+                        .putExtra("title", photo.title)
+                        .putExtra("url", photo.thumbnailsBig)
+                )
             }
         }
     }
