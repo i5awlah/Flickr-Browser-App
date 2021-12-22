@@ -17,5 +17,9 @@ class DetailsActivity : AppCompatActivity() {
         binding.tvTitle.text = title
         Glide.with(this).load(imageUrl).into(binding.ivBig)
         binding.tvTitle.text = title
+
+        binding.clMain.setOnClickListener {
+            this.finish()
+        }
     }
 }
