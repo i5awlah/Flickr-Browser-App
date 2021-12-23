@@ -3,6 +3,7 @@ package com.example.flickrbrowserapp.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.SearchView
 import android.widget.SeekBar
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
 import java.net.URL
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
     private var numberOfImage = 10
     private val apiKey = "2c129a93d0769924c943bbcb558d68b3"
-    private var tag = "computer"
+    private var tag = "cat"
 
     private var photosList = arrayListOf<PhotoModel>()
 
@@ -39,22 +41,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         setupSeekBar()
         setupRV()
+        setupSearchView()
         requestAPI()
-        //requestAPIByRetrofit()
-
-        binding.btnSearch.setOnClickListener {
-            tag = binding.etSearch.text.toString()
-            if (tag.isNotEmpty()) {
-                requestAPI()
-                //requestAPIByRetrofit()
-            }
-        }
-
 
     }
+
+
 
     private fun setupSeekBar() {
         val seek = binding.seekBar
@@ -70,7 +64,6 @@ class MainActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seek: SeekBar) {
                 numberOfImage = seek.progress.toString().toInt()
                 requestAPI()
-                //requestAPIByRetrofit()
             }
         })
     }
@@ -80,6 +73,25 @@ class MainActivity : AppCompatActivity() {
         adapter = PhotoAdapter(photosList, this)
         rvPhotos.adapter = adapter
         rvPhotos.layoutManager = GridLayoutManager(this, 3)
+    }
+
+    private fun setupSearchView() {
+        binding.searchView.setOnQueryTextListener(
+            object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    Log.d("Main", "onQueryTextSubmit: $query")
+                    if (query?.isNotEmpty() == true) {
+                        tag = query
+                        requestAPI()
+                    }
+                    return false
+                }
+
+                override fun onQueryTextChange(query: String?): Boolean {
+                    Log.d("Main", "onQueryTextChange: $query")
+                    return false
+                }
+            })
     }
 
     private fun requestAPI() {
