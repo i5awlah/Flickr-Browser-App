@@ -1,5 +1,6 @@
 package com.example.flickrbrowserapp.services
 
+import com.example.flickrbrowserapp.models.xmlModel.RssFeed
 import com.example.flickrbrowserapp.models.jsonModel.PhotoResponse
 import retrofit2.Response
 import retrofit2.http.GET
@@ -13,4 +14,9 @@ interface APIInterface {
     suspend fun getPhotos(@Query("tags") tag: String,
                           @Query("per_page") numberOfImage: Int
     ): Response<PhotoResponse>
+
+    @GET("services/rest/?method=flickr.photos.search&api_key=$apiKey&format=rest")
+    suspend fun getPhotosByXML(@Query("tags") tag: String,
+                          @Query("per_page") numberOfImage: Int
+    ): Response<RssFeed>
 }

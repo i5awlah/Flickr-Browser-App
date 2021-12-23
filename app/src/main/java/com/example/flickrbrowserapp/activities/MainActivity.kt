@@ -21,7 +21,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
 import java.net.URL
-import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
 
@@ -45,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         setupRV()
         setupSearchView()
         requestAPI()
-
     }
 
 
@@ -169,5 +167,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun requestAPIByRetrofitXML() {
+        photosList.clear()
+        CoroutineScope(IO).launch{
+            val response = APIClient.getClient()?.create(APIInterface::class.java)!!.getPhotosByXML(tag, numberOfImage)
+            if (response.isSuccessful()) {
+                val photos = response.body()!!.photos?.photo!!
+                for (i in 0 until photos.size) {
+                    val id = photos[i].id
+                    val server = photos[i].server
+                    val secret = photos[i].secret
+
+                    val thumbnailsSmall = "https://live.staticflickr.com/$server/${id}_${secret}_q.jpg" // q -> thumbnail 150 px
+                    val thumbnailsBig = "https://live.staticflickr.com/$server/${id}_${secret}_b.jpg"  // b -> large 1024 px
+                    photosList.add(PhotoModel(photos[i].title!!, thumbnailsSmall, thumbnailsBig))
+                }
+                withContext(Main){
+                    adapter.update(photosList)
+                }
+            } else {
+                Log.d("Main", "Unable to get data")
+            }
+        }
     }
 }
